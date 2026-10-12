@@ -1,0 +1,7 @@
+**/bin/
+**/obj/
+**/.vs/
+_tmp_seed/
+_assignment_pages/
+tests/
+.git/

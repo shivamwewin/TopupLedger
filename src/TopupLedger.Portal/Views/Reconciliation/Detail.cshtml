@@ -1,0 +1,25 @@
+@model TopupLedger.Domain.Entities.ReconciliationRun
+@using TopupLedger.Domain.Entities
+@{
+    ViewData["Title"] = "Reconciliation run";
+    var findings = (IReadOnlyList<ReconciliationFinding>)ViewBag.Findings;
+}
+<h1 class="h3">@Model.FileName</h1>
+<ul>
+    <li>Matched: @Model.MatchedCount</li>
+    <li>Missing in ours: @Model.MissingInOursCount</li>
+    <li>Missing in operator: @Model.MissingInOperatorCount</li>
+    <li>Amount mismatch: @Model.AmountMismatchCount</li>
+    <li>Status mismatch: @Model.StatusMismatchCount</li>
+    <li>Duplicate rows skipped: @Model.DuplicateRowCount</li>
+</ul>
+<table class="table table-sm">
+    <thead><tr><th>Category</th><th>Operator txn</th><th>Top-up</th><th>Detail</th></tr></thead>
+    <tbody>
+    @foreach (var finding in findings)
+    {
+        <tr><td>@finding.Category</td><td>@finding.OperatorTxnId</td><td>@finding.TopupId</td><td>@finding.Detail</td></tr>
+    }
+    </tbody>
+</table>
+<p class="text-muted">The table shows the first 200 exception rows. Matched rows are counted and not listed.</p>

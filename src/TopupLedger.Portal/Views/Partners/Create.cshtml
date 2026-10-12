@@ -1,0 +1,29 @@
+@using TopupLedger.Application.Portal
+@{
+    ViewData["Title"] = "New partner";
+    var distributors = (IReadOnlyList<PartnerListItem>)ViewBag.Distributors;
+}
+<h1 class="h3">New partner</h1>
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3"><label class="form-label">Name</label><input class="form-control" name="name" required /></div>
+    <div class="mb-3">
+        <label class="form-label">Tier</label>
+        <select class="form-select" name="tier">
+            <option>RETAILER</option>
+            <option>DISTRIBUTOR</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Parent distributor</label>
+        <select class="form-select" name="parentPartnerId">
+            <option value="">None</option>
+            @foreach (var distributor in distributors)
+            {
+                <option value="@distributor.Id">@distributor.Name</option>
+            }
+        </select>
+    </div>
+    <button class="btn btn-dark" type="submit">Create</button>
+</form>

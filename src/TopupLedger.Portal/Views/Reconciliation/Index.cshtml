@@ -1,0 +1,37 @@
+@model IReadOnlyList<TopupLedger.Domain.Entities.ReconciliationRun>
+@{
+    ViewData["Title"] = "Reconciliation";
+}
+<h1 class="h3">Operator reconciliation</h1>
+@if (TempData["Error"] is string error)
+{
+    <div class="alert alert-danger">@error</div>
+}
+@if (User.IsInRole("ADMIN"))
+{
+    <form asp-action="Upload" method="post" enctype="multipart/form-data" class="mb-4">
+        @Html.AntiForgeryToken()
+        <div class="input-group">
+            <input class="form-control" type="file" name="file" accept=".csv,text/csv" required />
+            <button class="btn btn-dark" type="submit">Upload</button>
+        </div>
+        <div class="form-text">The file is streamed. Uploading the same bytes again returns the existing run.</div>
+    </form>
+}
+<table class="table table-sm">
+    <thead><tr><th>When</th><th>File</th><th>Matched</th><th>Missing ours</th><th>Missing operator</th><th>Amount</th><th>Status</th></tr></thead>
+    <tbody>
+    @foreach (var run in Model)
+    {
+        <tr>
+            <td><a asp-action="Detail" asp-route-id="@run.Id">@run.CreatedAtUtc.ToString("u")</a></td>
+            <td>@run.FileName</td>
+            <td>@run.MatchedCount</td>
+            <td>@run.MissingInOursCount</td>
+            <td>@run.MissingInOperatorCount</td>
+            <td>@run.AmountMismatchCount</td>
+            <td>@run.StatusMismatchCount</td>
+        </tr>
+    }
+    </tbody>
+</table>

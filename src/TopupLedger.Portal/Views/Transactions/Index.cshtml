@@ -1,0 +1,36 @@
+@model TopupLedger.Application.Portal.TransactionSearchPage
+@using TopupLedger.Domain.Money
+@{
+    ViewData["Title"] = "Transactions";
+}
+<h1 class="h3">Transactions</h1>
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-2"><input class="form-control" name="msisdn" value="@ViewBag.Msisdn" placeholder="MSISDN" /></div>
+    <div class="col-md-2"><input class="form-control" name="clientRef" value="@ViewBag.ClientRef" placeholder="clientRef" /></div>
+    <div class="col-md-2"><input class="form-control" name="status" value="@ViewBag.Status" placeholder="PENDING" /></div>
+    <div class="col-md-2"><input class="form-control" name="from" value="@ViewBag.From" placeholder="from YYYY-MM-DD" /></div>
+    <div class="col-md-2"><input class="form-control" name="to" value="@ViewBag.To" placeholder="to YYYY-MM-DD" /></div>
+    <div class="col-md-2"><button class="btn btn-dark" type="submit">Search</button></div>
+</form>
+<table class="table table-sm">
+    <thead><tr><th>When (UTC)</th><th>Partner</th><th>MSISDN</th><th>Ref</th><th>Operator</th><th>Status</th><th>Face</th><th>Business day</th></tr></thead>
+    <tbody>
+    @foreach (var row in Model.Items)
+    {
+        <tr>
+            <td><a asp-action="Detail" asp-route-id="@row.Id">@row.CreatedAtUtc.ToString("u")</a></td>
+            <td>@row.PartnerName</td>
+            <td>@row.Msisdn</td>
+            <td>@row.ClientRef</td>
+            <td>@row.Operator</td>
+            <td>@row.Status</td>
+            <td>@Fils.FormatAed(row.FaceValueFils)</td>
+            <td>@row.BusinessDay.ToString("yyyy-MM-dd")</td>
+        </tr>
+    }
+    </tbody>
+</table>
+@if (Model.NextCursor is not null)
+{
+    <a class="btn btn-outline-dark" asp-action="Index" asp-route-msisdn="@ViewBag.Msisdn" asp-route-clientRef="@ViewBag.ClientRef" asp-route-status="@ViewBag.Status" asp-route-from="@ViewBag.From" asp-route-to="@ViewBag.To" asp-route-cursor="@Model.NextCursor">Next</a>
+}

@@ -1,0 +1,41 @@
+@model IReadOnlyList<TopupLedger.Application.Portal.PartnerListItem>
+@using TopupLedger.Domain.Money
+@{
+    ViewData["Title"] = "Partners";
+    var admin = User.IsInRole("ADMIN");
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Partners</h1>
+    @if (admin)
+    {
+        <a class="btn btn-dark" asp-action="Create">New partner</a>
+    }
+</div>
+<table class="table table-sm align-middle">
+    <thead><tr><th>Name</th><th>Tier</th><th>Status</th><th>API key</th><th>Parent</th><th>Balance</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var partner in Model)
+    {
+        <tr>
+            <td>@partner.Name</td>
+            <td>@partner.Tier</td>
+            <td>@partner.Status</td>
+            <td><code>@partner.ApiKey</code></td>
+            <td>@partner.ParentName</td>
+            <td>@Fils.FormatAed(partner.BalanceFils)</td>
+            <td class="text-end">
+                @if (admin)
+                {
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="Credit" asp-route-id="@partner.Id">Add float</a>
+                    <form asp-action="SetStatus" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@partner.Id" />
+                        <input type="hidden" name="status" value="@(partner.Status == "ACTIVE" ? "SUSPENDED" : "ACTIVE")" />
+                        <button class="btn btn-sm btn-outline-dark" type="submit">@(partner.Status == "ACTIVE" ? "Suspend" : "Activate")</button>
+                    </form>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,0 +1,39 @@
+@model TopupLedger.Application.Portal.SettlementProgress?
+@{
+    ViewData["Title"] = "Settlement";
+    var day = (string)ViewBag.BusinessDay;
+}
+<h1 class="h3">Settlement</h1>
+@if (TempData["Error"] is string error)
+{
+    <div class="alert alert-danger">@error</div>
+}
+<form method="get" class="row g-2 mb-3">
+    <div class="col-auto"><input class="form-control" name="businessDay" value="@day" /></div>
+    <div class="col-auto"><button class="btn btn-outline-dark" type="submit">Show</button></div>
+</form>
+@if (User.IsInRole("ADMIN"))
+{
+    <form asp-action="Generate" method="post" class="mb-3">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="businessDay" value="@day" />
+        <button class="btn btn-dark" type="submit">Generate settlement</button>
+    </form>
+}
+@if (Model is null)
+{
+    <p>No settlement has been requested for this business day.</p>
+}
+else
+{
+    <p>Status: <strong>@Model.Status</strong> · lines @Model.LineCount</p>
+    @if (!string.IsNullOrEmpty(Model.Error))
+    {
+        <div class="alert alert-danger">@Model.Error</div>
+    }
+    @if (Model.Status is "QUEUED" or "RUNNING")
+    {
+        <p class="text-muted">Generation runs in the background. This page refreshes.</p>
+        <meta http-equiv="refresh" content="2" />
+    }
+}

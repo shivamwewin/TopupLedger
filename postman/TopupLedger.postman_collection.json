@@ -1,0 +1,44 @@
+{
+  "info": { "name": "TopupLedger", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json" },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:8080" },
+    { "key": "apiKey", "value": "ak_test_retail_marina" },
+    { "key": "partnerSecret", "value": "sk_test_E3JNS3_UAE_2026_k7Rm" },
+    { "key": "idempotencyKey", "value": "7f3c2a91-5d4e-4b8a-9c1f-0e6d2b7a4c55" }
+  ],
+  "event": [{
+    "listen": "prerequest",
+    "script": {
+      "type": "text/javascript",
+      "exec": [
+        "const method = pm.request.method.toUpperCase();",
+        "const path = '/' + pm.request.url.path.join('/');",
+        "const ts = Math.floor(Date.now() / 1000).toString();",
+        "const idem = method === 'GET' ? '' : (pm.collectionVariables.get('idempotencyKey') || '');",
+        "const raw = (pm.request.body && pm.request.body.raw) ? pm.request.body.raw : '';",
+        "const bodyHash = CryptoJS.SHA256(CryptoJS.enc.Utf8.parse(raw)).toString(CryptoJS.enc.Hex);",
+        "const canonical = [method, path, ts, idem, bodyHash].join('\\n');",
+        "const sig = CryptoJS.HmacSHA256(canonical, pm.collectionVariables.get('partnerSecret')).toString(CryptoJS.enc.Hex);",
+        "pm.request.headers.upsert({ key: 'X-Api-Key', value: pm.collectionVariables.get('apiKey') });",
+        "pm.request.headers.upsert({ key: 'X-Timestamp', value: ts });",
+        "pm.request.headers.upsert({ key: 'X-Signature', value: sig });",
+        "if (method !== 'GET') pm.request.headers.upsert({ key: 'Idempotency-Key', value: idem });"
+      ]
+    }
+  }],
+  "item": [
+    {
+      "name": "Create top-up",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"msisdn\":\"0501234567\",\"amount\":\"10.00\",\"operator\":\"ETISALAT\",\"clientRef\":\"RTL-000981\"}" },
+        "url": "{{baseUrl}}/api/v1/partner/topups"
+      }
+    },
+    {
+      "name": "Get wallet",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/partner/wallet" }
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: topupledger
+      MYSQL_USER: topup
+      MYSQL_PASSWORD: topup
+      MYSQL_ROOT_PASSWORD: root
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --log-bin-trust-function-creators=1
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./db/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-utopup", "-ptopup"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build:
+      context: .
+      dockerfile: src/TopupLedger.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__TopupLedger: server=mysql;port=3306;database=topupledger;user=topup;password=topup;SslMode=None;AllowPublicKeyRetrieval=True;GuidFormat=Char36
+      DataProtection__KeyBase64: AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=
+      Operators__EtisalatToken: dev-etisalat-token
+      Operators__DuToken: dev-du-token
+      LedgerRules__Variant: V1
+      Seed__OnStartup: "true"
+      OperatorSimulator__CallbackBaseUrl: http://127.0.0.1:8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  portal:
+    build:
+      context: .
+      dockerfile: src/TopupLedger.Portal/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8081
+      ConnectionStrings__TopupLedger: server=mysql;port=3306;database=topupledger;user=topup;password=topup;SslMode=None;AllowPublicKeyRetrieval=True;GuidFormat=Char36
+      DataProtection__KeyBase64: AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=
+      Operators__EtisalatToken: dev-etisalat-token
+      Operators__DuToken: dev-du-token
+      LedgerRules__Variant: V1
+      Seed__OnStartup: "true"
+    ports:
+      - "8081:8081"
+    depends_on:
+      mysql:
+        condition: service_healthy

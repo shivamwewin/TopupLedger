@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TopupLedger</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-controller="Dashboard" asp-action="Index">TopupLedger</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="nav">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item"><a class="nav-link" asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Partners" asp-action="Index">Partners</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Transactions" asp-action="Index">Transactions</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Reconciliation" asp-action="Index">Reconciliation</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Settlement" asp-action="Index">Settlement</a></li>
+                        </ul>
+                        <span class="navbar-text me-3">@User.Identity.Name (@(User.IsInRole("ADMIN") ? "ADMIN" : "VIEWER"))</span>
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                            <button class="btn btn-outline-light btn-sm" type="submit">Sign out</button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container pb-4">
+        <main>@RenderBody()</main>
+    </div>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

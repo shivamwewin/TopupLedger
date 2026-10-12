@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TopupLedger.Api/TopupLedger.Api.csproj" />
+    <Project Path="src/TopupLedger.Application/TopupLedger.Application.csproj" />
+    <Project Path="src/TopupLedger.Domain/TopupLedger.Domain.csproj" />
+    <Project Path="src/TopupLedger.Infrastructure/TopupLedger.Infrastructure.csproj" />
+    <Project Path="src/TopupLedger.Portal/TopupLedger.Portal.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TopupLedger.Tests/TopupLedger.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,33 @@
+@model TopupLedger.Application.Portal.DashboardModel
+@using TopupLedger.Domain.Money
+@{
+    ViewData["Title"] = "Dashboard";
+}
+<h1 class="h3">Today @Model.BusinessDay.ToString("yyyy-MM-dd")</h1>
+<p class="text-muted">Business day uses the configured Dubai cut-off. Float is the sum of partner wallet balances.</p>
+<div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="card"><div class="card-body"><div class="text-muted">Wallet float</div><div class="fs-4">@Fils.FormatAed(Model.TotalFloatFils) AED</div></div></div></div>
+    <div class="col-md-4"><div class="card"><div class="card-body"><div class="text-muted">Clearing account</div><div class="fs-4">@Fils.FormatAed(Model.ClearingFils) AED</div></div></div></div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <h2 class="h5">By status</h2>
+        <table class="table table-sm"><thead><tr><th>Status</th><th>Count</th><th>Face value</th></tr></thead>
+        <tbody>
+        @foreach (var row in Model.ByStatus)
+        {
+            <tr><td>@row.Key</td><td>@row.Count</td><td>@Fils.FormatAed(row.FaceValueFils)</td></tr>
+        }
+        </tbody></table>
+    </div>
+    <div class="col-md-6">
+        <h2 class="h5">By operator</h2>
+        <table class="table table-sm"><thead><tr><th>Operator</th><th>Count</th><th>Face value</th></tr></thead>
+        <tbody>
+        @foreach (var row in Model.ByOperator)
+        {
+            <tr><td>@row.Key</td><td>@row.Count</td><td>@Fils.FormatAed(row.FaceValueFils)</td></tr>
+        }
+        </tbody></table>
+    </div>
+</div>

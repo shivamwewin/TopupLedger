@@ -1,0 +1,35 @@
+@model TopupLedger.Application.Portal.TopupDetailModel
+@using TopupLedger.Domain.Money
+@{
+    ViewData["Title"] = "Top-up";
+}
+<h1 class="h3">@Model.Topup.Status</h1>
+<dl class="row">
+    <dt class="col-sm-3">Partner</dt><dd class="col-sm-9">@Model.Topup.PartnerName</dd>
+    <dt class="col-sm-3">MSISDN</dt><dd class="col-sm-9">@Model.Topup.Msisdn</dd>
+    <dt class="col-sm-3">clientRef</dt><dd class="col-sm-9">@Model.Topup.ClientRef</dd>
+    <dt class="col-sm-3">Operator txn</dt><dd class="col-sm-9">@Model.OperatorTxnId</dd>
+    <dt class="col-sm-3">Face / debit</dt><dd class="col-sm-9">@Fils.FormatAed(Model.Topup.FaceValueFils) / @Fils.FormatAed(Model.DebitFils)</dd>
+    <dt class="col-sm-3">Retailer / distributor</dt><dd class="col-sm-9">@Model.RetailerCommissionFils fils / @Model.DistributorShareFils fils</dd>
+    <dt class="col-sm-3">Business day</dt><dd class="col-sm-9">@Model.Topup.BusinessDay.ToString("yyyy-MM-dd")</dd>
+</dl>
+<h2 class="h5">Ledger</h2>
+<table class="table table-sm"><thead><tr><th>Id</th><th>Movement</th><th>Type</th><th>Amount fils</th><th>Reason</th></tr></thead>
+<tbody>
+@foreach (var entry in Model.Ledger)
+{
+    <tr><td>@entry.Id</td><td>@entry.TransactionId</td><td>@entry.EntryType</td><td>@entry.AmountFils</td><td>@entry.Reason</td></tr>
+}
+</tbody></table>
+<h2 class="h5">Callbacks</h2>
+<table class="table table-sm"><thead><tr><th>Seq</th><th>Status</th><th>Txn</th><th>Applied</th><th>Note</th></tr></thead>
+<tbody>
+@foreach (var callback in Model.Callbacks)
+{
+    <tr><td>@callback.EventSeq</td><td>@callback.Status</td><td>@callback.OperatorTxnId</td><td>@callback.Applied</td><td></td></tr>
+}
+@foreach (var callback in Model.LateCallbacks)
+{
+    <tr class="table-warning"><td>@callback.EventSeq</td><td>@callback.Status</td><td>@callback.OperatorTxnId</td><td>late</td><td>@callback.Note</td></tr>
+}
+</tbody></table>

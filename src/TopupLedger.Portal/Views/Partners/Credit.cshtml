@@ -1,0 +1,14 @@
+@model Guid
+@{
+    ViewData["Title"] = "Add float";
+}
+<h1 class="h3">Add wallet float</h1>
+<p class="text-muted">Posts a balanced ledger pair. Historical rows are not edited.</p>
+<form method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@Model" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3"><label class="form-label">Amount AED</label><input class="form-control" name="amount" placeholder="100.00" required /></div>
+    <div class="mb-3"><label class="form-label">Reason</label><textarea class="form-control" name="reason" required></textarea></div>
+    <button class="btn btn-dark" type="submit">Credit wallet</button>
+</form>
