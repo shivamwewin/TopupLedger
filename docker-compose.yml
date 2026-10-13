@@ -11,7 +11,7 @@ services:
       - --collation-server=utf8mb4_unicode_ci
       - --log-bin-trust-function-creators=1
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
       - ./db/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro

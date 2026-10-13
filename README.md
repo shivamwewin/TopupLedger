@@ -12,7 +12,7 @@ Requirements: .NET 8 SDK, Docker, MySQL 8 if you are not using Compose.
 docker compose up --build
 ```
 
-API `http://localhost:8080` (Swagger in Development). Portal `http://localhost:8081`. MySQL `127.0.0.1:3306`, database `topupledger`, user `topup` / `topup`.
+API `http://localhost:8080` (Swagger in Development). Portal `http://localhost:8081`. From the host, MySQL is `127.0.0.1:3307` (published there so it does not collide with a local MySQL on 3306). Database `topupledger`, user `topup` / `topup`. Inside Compose the API uses hostname `mysql` on port 3306. Visual Studio reads `appsettings.Development.json` and connects to port 3307.
 
 Without Compose, create the database, then:
 
