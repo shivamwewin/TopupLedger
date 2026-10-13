@@ -13,7 +13,7 @@ namespace TopupLedger.Api.Controllers;
 [Route("api/v1/partner/topups")]
 public sealed class TopupsController : ControllerBase
 {
-    private readonly IMediator _mediator;
+    private readonly IMediator _mediator;  
 
     public TopupsController(IMediator mediator) => _mediator = mediator;
 
